@@ -20,10 +20,10 @@ while 1:
     # -------------------Message received from client with buffer size limit of 1024 bytes and decode utf-8 byte stream.
     message = tcpCliSock.recv(1024).decode('utf-8')
     # Fill in end.
-        print(message.decode())
+        print(message)
 
         # Extract the filename from the given message
-        print(message.split()[1])
+        print(message.split()[1].decode())
         filename = message.split()[1].partition("/")[2]
         print(filename)
         fileExist = "false"
