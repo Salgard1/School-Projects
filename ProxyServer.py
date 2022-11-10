@@ -2,42 +2,41 @@ from socket import *
 import sys
 
 # Create a server socket, bind it to a port and start listening
-tcpSerSock = socket(AF_INET, SOCK_STREAM)
+tcpSerSock = socket(AF_INET, SOCK_STREAM) # ---------------------------Socket created only for accepting connections.
 
-# Fill in start. 
-tcpSerPort = 8888
-tcpSerSock.bind(("", tcpSerPort))
-tcpSerSock.listen(5)
+# Fill in start.
+tcpSerPort = 8888 # --------------------------------------------------  Unused port number.
+tcpSerSock.bind(("", tcpSerPort)) # ------------------------------------ Bind host and port
+tcpSerSock.listen(5) # --------------------------------------------------Optional Limit of up to 5 connections
 # Fill in end.
 
 while 1:
     # Start receiving data from the client
     print('Ready to serve...')
-    tcpCliSock, addr = tcpSerSock.accept()
+    tcpCliSock, addr = tcpSerSock.accept() # ---------------------------Socket created for communication with client.
     print('Received a connection from:', addr)
 
     # Fill in start.
-    message = tcpCliSock.recv(2048)
-    if str(message, encoding='utf8') != '':
+    # -------------------Message received from client with buffer size limit of 1024 bytes and decode utf-8 byte stream.
+    message = tcpCliSock.recv(1024).decode('utf-8')
     # Fill in end.
-        print(message)
+        print(message.decode())
 
         # Extract the filename from the given message
         print(message.split()[1])
-        file = str(message, encoding='utf8')
-        filename = file.split()[1].partition("/")[2]
+        filename = message.split()[1].partition("/")[2]
         print(filename)
         fileExist = "false"
         filetouse = "/" + filename
         print(filetouse)
         try:
             # Check whether the file exist in the cache
-            f = open(filetouse[1:], "rb")
+            f = open(filetouse[1:], "r")
             outputdata = f.readlines()
             fileExist = "true"
             # ProxyServer finds a cache hit and generates a response message
-            tcpCliSock.send(bytes("HTTP/1.0 200 OK\r\n"))
-            tcpCliSock.send(bytes("Content-Type:text/html\r\n"))
+            tcpCliSock.send(bytes("HTTP/1.0 200 OK\r\n", 'utf-8'))
+            tcpCliSock.send(bytes("Content-Type:text/html\r\n", 'utf-8'))
             # Fill in start.
             for i in range(0, len(outputdata)):
                 tcpCliSock.send(outputdata[i])
